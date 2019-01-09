@@ -91,3 +91,22 @@ class YOLO_v1:
         self.conv6_1 = self.conv_layer(self.conv5_1, 1024, 3, 1, 'conv6_1')
         self.conv6_2 = self.conv_layer(self.conv6_1, 1024, 3, 1, 'conv6_2')
 
+        # flatten
+        # input: 7x7x1024
+        # output: 50176
+        self.flat = tf.layers.flatten(
+            tf.transpose(self.conv6_2, (0, 3, 1, 2)),
+            name='flatten'
+        )
+
+        # input: 50176
+        # output: 512
+        self.fc7 = self.fc_layer(self.flat, 50176, 512, 'fc7')
+
+        # input: 512
+        # output: 4096
+        self.fc8 = self.fc_layer(self.fc7, 512, 4096, 'fc8')
+
+        # input: 4096
+        # output: 1470
+        self.fc7 = self.fc_layer(self.fc8, 4096, 1470, 'fc9')
