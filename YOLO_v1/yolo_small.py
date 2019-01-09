@@ -109,4 +109,4 @@ class YOLO_v1:
 
         # input: 4096
         # output: 1470
-        self.fc7 = self.fc_layer(self.fc8, 4096, 1470, 'fc9')
+        self.fc7 = self.fc_layer(self.fc8, 4096, 1470, 'fc9', linear=True)
