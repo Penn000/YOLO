@@ -17,8 +17,8 @@ class YOLO_v1:
                 shape=(filters),
                 initializer=tf.constant_initializer(0.1)
             )
-        layer = tf.nn.conv2d(x, weight, strides=[1, stride, stride, 1], padding='VALID', name=name) + biases
-        relu = tf.nn.leaky_relu(layer, alpha=self.alpha, name=name+'_relu')
+            layer = tf.nn.conv2d(x, weight, strides=[1, stride, stride, 1], padding='VALID', name=name) + biases
+            relu = tf.nn.leaky_relu(layer, alpha=self.alpha, name=name+'_relu')
         return relu
     
     def pooling_layer(self, x, size, stride, name):
@@ -36,10 +36,9 @@ class YOLO_v1:
                 shape=(out_size),
                 initializer=tf.constant_initializer(0.1)
             )
-        layer = tf.nn.xw_plus_b(x, weight, biases, name=name)
-        if linear:
-            return layer
-        relu = tf.nn.leaky_relu(layer, alpha=self.alpha, name=name+'_relu')
+            layer = tf.nn.xw_plus_b(x, weight, biases, name=name)
+            if linear: return layer
+            relu = tf.nn.leaky_relu(layer, alpha=self.alpha, name=name+'_relu')
         return relu
 
     def build(self):
@@ -110,3 +109,9 @@ class YOLO_v1:
         # input: 4096
         # output: 1470
         self.fc7 = self.fc_layer(self.fc8, 4096, 1470, 'fc9', linear=True)
+
+    def nms(self, x):
+        probs = np.zeros((7, 7, 2, 20))
+        class_probs = np.reshape(x[0: 980], (7, 7, 20))
+        scales = np.reshape(x[980: 1078], (7, 7, 2))
+        bboxes = np.reshape(x[1078:], (7, 7, 2, 4))
